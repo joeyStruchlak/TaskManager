@@ -17,4 +17,8 @@ public interface ITaskRepository
     // CONTRACT ITEM 2: "Whoever implements this must provide a way to save a new task."
     // Takes a TaskItem as input, saves it, and returns the saved TaskItem (with its new ID).
     Task<TaskItem> AddAsync(TaskItem task);
+
+
+    Task<TaskItem?> GetByIdAsync(int id);
+    Task UpdateAsync(TaskItem task);
 }

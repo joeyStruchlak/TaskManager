@@ -43,4 +43,17 @@ public class TaskRepository : ITaskRepository
         // Return the saved task (now containing its newly assigned database Id)
         return task;
     }
+
+    public async Task<TaskItem?> GetByIdAsync(int id)
+    {
+        return await _context.Tasks.FindAsync(id);
+    }
+
+    public async Task UpdateAsync(TaskItem task)
+    {
+        _context.Tasks.Update(task);
+        await _context.SaveChangesAsync();
+    }
+
+
 }
