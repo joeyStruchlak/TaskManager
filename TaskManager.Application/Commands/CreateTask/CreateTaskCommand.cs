@@ -6,5 +6,10 @@ using TaskManager.Application.DTOs;
 
 namespace TaskManager.Application.Commands.CreateTask
 {
-    public record CreateTaskCommand(string Title, string? Description) : IRequest<TaskDto>;
+    public record CreateTaskCommand(
+    string Title,
+    string? Description,
+    string Priority = "Medium",
+    string? AssignedTo = null,
+    DateTime? DueDate = null) : IRequest<TaskDto>;
 }

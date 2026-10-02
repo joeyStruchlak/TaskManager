@@ -34,7 +34,10 @@ public class GetAllTasksQueryHandler : IRequestHandler<GetAllTasksQuery, IEnumer
             Description = task.Description,
             IsCompleted = task.IsCompleted,
             CreatedAt = task.CreatedAt,
-            CompletedAt = task.CompletedAt
+            CompletedAt = task.CompletedAt,
+            Priority = task.Priority,
+            AssignedTo = task.AssignedTo,
+            DueDate = task.DueDate
         });
     }
 }

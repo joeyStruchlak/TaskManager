@@ -22,7 +22,12 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, TaskD
     // MediatR calls this method when a CreateTaskCommand is sent
     // "request" IS the command — it has request.Title and request.Description on it
     {
-        var task = new TaskItem(request.Title, request.Description);
+        var task = new TaskItem(
+         request.Title,
+         request.Description,
+         request.Priority,
+         request.AssignedTo,
+         request.DueDate);
 
         var createdTask = await _taskRepository.AddAsync(task);
         // save the task to the database and wait for it to finish
@@ -37,7 +42,10 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, TaskD
             Description = createdTask.Description,  // what the user typed
             IsCompleted = createdTask.IsCompleted,  // false
             CreatedAt = createdTask.CreatedAt,      // the timestamp we set above
-            CompletedAt = createdTask.CompletedAt   // null — task just created
+            CompletedAt = createdTask.CompletedAt,
+            Priority = createdTask.Priority,
+            AssignedTo = createdTask.AssignedTo,
+            DueDate = createdTask.DueDate
         };
     }
 }

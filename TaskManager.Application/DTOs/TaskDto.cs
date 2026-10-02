@@ -25,4 +25,12 @@ public class TaskDto
 
     // 6. The date and time it was finished. Can be NULL (empty) if it's still open.
     public DateTime? CompletedAt { get; set; }
+    // 7. Priority level of the task
+    public string Priority { get; set; } = "Medium";
+
+    // 8. Email of the staff member this task is assigned to (M365 email)
+    public string? AssignedTo { get; set; }
+
+    // 9. When this task is due. Null if no due date set.
+    public DateTime? DueDate { get; set; }
 }

@@ -31,10 +31,9 @@ public class TasksController : ControllerBase
 
     // POST /api/tasks
     [HttpPost]
-    public async Task<ActionResult<TaskDto>> Create([FromBody] CreateTaskRequest request)
+    public async Task<ActionResult<TaskDto>> Create([FromBody] CreateTaskCommand command)
     {
-        // Create the command with the user's data and hand it to MediatR
-        var task = await _mediator.Send(new CreateTaskCommand(request.Title, request.Description));
+        var task = await _mediator.Send(command);
         return StatusCode(201, task);
     }
 

@@ -17,6 +17,8 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.File("logs/taskmanager-.log", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 30)
     .CreateLogger();
 
+
+
 // 1. STARTUP BUILDER: Initializes the Web Application configuration engine
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
@@ -41,6 +43,17 @@ builder.Services.AddDbContext<TaskDbContext>(options =>
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
+// Add this BEFORE var app = builder.Build();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularDev", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // 3. BUILD THE APP: Freezes the configuration and constructs the running application
 var app = builder.Build();
 app.UseMiddleware<ExceptionHandlingMiddleware>(); // Add custom exception handling middleware to the pipeline>
@@ -52,6 +65,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(); // Serve the interactive Swagger web UI page
 }
 
+
+app.UseCors("AllowAngularDev");
 app.UseHttpsRedirection(); // Automatically redirect HTTP requests to secure HTTPS
 app.UseAuthorization();    // Enables security/user permissions check (if configured)
 app.MapControllers();      // Routes incoming web URLs directly to Controller methods
