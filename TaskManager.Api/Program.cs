@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;         // EF Core database tools
 using TaskManager.Application.Behaviours;
 using TaskManager.Api.Middleware;
 using Serilog;
+using Temporalio.Extensions.Hosting;
+using TaskManager.Infrastructure.Workflows;
+using TaskManager.Infrastructure.Activities;
 using TaskManager.Application.Queries.GetAllTasks;
 using TaskManager.Domain.Interfaces;         // Bringing in Repository Interfaces
 using TaskManager.Infrastructure.Data;       // Bringing in DbContext
@@ -42,6 +45,26 @@ builder.Services.AddDbContext<TaskDbContext>(options =>
 // AddScoped means: Create ONE instance per HTTP web request, then destroy it when done.
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+
+// REGISTER TEMPORAL CLIENT
+// Registers ITemporalClient in DI so it can be injected anywhere.
+// This is what CreateTaskCommandHandler uses to fire "start workflow" at Temporal.
+builder.Services.AddTemporalClient(opts =>
+{
+    opts.TargetHost = "localhost:7233";
+    opts.Namespace = "default";
+});
+
+// REGISTER TEMPORAL WORKER
+// This is a background service that connects to the Temporal server
+// and listens for workflow jobs on the "task-manager" queue.
+// When Temporal has work, it sends it here via gRPC on port 7233.
+builder.Services.AddHostedTemporalWorker(
+        clientTargetHost: "localhost:7233",
+        clientNamespace: "default",
+        taskQueue: "task-manager")
+    .AddWorkflow<TaskAssignmentWorkflow>()
+    .AddScopedActivities<TaskAssignmentActivities>();
 
 // Add this BEFORE var app = builder.Build();
 builder.Services.AddCors(options =>
