@@ -1,18 +1,19 @@
 // --- IMPORTS ---
 using FluentValidation;
-using TaskManager.Application.Commands.CreateTask;
 using MediatR;
 using Microsoft.EntityFrameworkCore;         // EF Core database tools
-using TaskManager.Application.Behaviours;
-using TaskManager.Api.Middleware;
 using Serilog;
-using Temporalio.Extensions.Hosting;
+using TaskManager.Api.Middleware;
+using TaskManager.Application.Behaviours;
+using TaskManager.Application.Commands.CreateTask;
 using TaskManager.Infrastructure.Workflows;
-using TaskManager.Infrastructure.Activities;
+using TaskManager.Application.Interfaces;
 using TaskManager.Application.Queries.GetAllTasks;
 using TaskManager.Domain.Interfaces;         // Bringing in Repository Interfaces
+using TaskManager.Infrastructure.Activities;
 using TaskManager.Infrastructure.Data;       // Bringing in DbContext
 using TaskManager.Infrastructure.Repositories; // Bringing in concrete Repository implementation
+using Temporalio.Extensions.Hosting;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -45,6 +46,8 @@ builder.Services.AddDbContext<TaskDbContext>(options =>
 // AddScoped means: Create ONE instance per HTTP web request, then destroy it when done.
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<ITimesheetRepository, TimesheetRepository>();
+builder.Services.AddScoped<ITimesheetWorkflowService, TimesheetWorkflowService>();
 
 // REGISTER TEMPORAL CLIENT
 // Registers ITemporalClient in DI so it can be injected anywhere.
@@ -64,7 +67,9 @@ builder.Services.AddHostedTemporalWorker(
         clientNamespace: "default",
         taskQueue: "task-manager")
     .AddWorkflow<TaskAssignmentWorkflow>()
-    .AddScopedActivities<TaskAssignmentActivities>();
+    .AddScopedActivities<TaskAssignmentActivities>()
+    .AddWorkflow<TimesheetApprovalWorkflow>()
+    .AddScopedActivities<TimesheetApprovalActivities>();
 
 // Add this BEFORE var app = builder.Build();
 builder.Services.AddCors(options =>

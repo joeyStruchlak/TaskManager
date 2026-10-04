@@ -9,6 +9,8 @@ public class TaskDbContext : DbContext
 
     public DbSet<Project> Projects { get; set; }
 
+    public DbSet<Timesheet> Timesheets { get; set; }
+
     public TaskDbContext(DbContextOptions<TaskDbContext> options)
         : base(options)
     {
@@ -33,5 +35,17 @@ public class TaskDbContext : DbContext
             entity.Property(e => e.Description).HasMaxLength(1000);
             entity.Property(e => e.CreatedAt).IsRequired();
         });
+
+        modelBuilder.Entity<Timesheet>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.SubmittedBy).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.SupervisorEmail).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.TotalHours).IsRequired();
+            entity.Property(e => e.Status).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.SubmittedAt).IsRequired();
+        });
+
+
     }
 }
