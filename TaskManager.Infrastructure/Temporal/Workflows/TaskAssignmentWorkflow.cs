@@ -1,9 +1,9 @@
 ﻿using Temporalio.Workflows;
 using Temporalio.Common;
-using TaskManager.Application.Workflows;
-using TaskManager.Infrastructure.Activities;
+using TaskManager.Application.Interfaces;
+using TaskManager.Infrastructure.Temporal.Activities;
 
-namespace TaskManager.Infrastructure.Workflows;
+namespace TaskManager.Infrastructure.Temporal.Workflows;
 
 // TEMPORAL CONCEPT: Workflow Implementation
 // This is the BRAIN of the workflow - the orchestrator.
@@ -11,7 +11,7 @@ namespace TaskManager.Infrastructure.Workflows;
 // No database calls. No emails. No external APIs. Ever.
 // All real work is delegated to Activities.
 [Workflow]
-public class TaskAssignmentWorkflow : ITaskAssignmentWorkflow
+public class TaskAssignmentWorkflow
 {
     // TEMPORAL CONCEPT: WorkflowRun Entry Point
     // Temporal calls this method when the workflow starts.
@@ -48,3 +48,5 @@ public class TaskAssignmentWorkflow : ITaskAssignmentWorkflow
             options);
     }
 }
+
+public record TaskAssignmentWorkflowInput(int TaskId);

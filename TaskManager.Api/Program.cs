@@ -6,14 +6,16 @@ using Serilog;
 using TaskManager.Api.Middleware;
 using TaskManager.Application.Behaviours;
 using TaskManager.Application.Commands.CreateTask;
-using TaskManager.Infrastructure.Workflows;
 using TaskManager.Application.Interfaces;
 using TaskManager.Application.Queries.GetAllTasks;
 using TaskManager.Domain.Interfaces;         // Bringing in Repository Interfaces
-using TaskManager.Infrastructure.Activities;
 using TaskManager.Infrastructure.Data;       // Bringing in DbContext
 using TaskManager.Infrastructure.Repositories; // Bringing in concrete Repository implementation
 using Temporalio.Extensions.Hosting;
+using TaskManager.Infrastructure.Temporal;
+using TaskManager.Infrastructure.Temporal.Workflows;
+using TaskManager.Infrastructure.Temporal.Activities;
+
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -48,6 +50,7 @@ builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<ITimesheetRepository, TimesheetRepository>();
 builder.Services.AddScoped<ITimesheetWorkflowService, TimesheetWorkflowService>();
+builder.Services.AddScoped<ITaskWorkflowService, TaskWorkflowService>();
 
 // REGISTER TEMPORAL CLIENT
 // Registers ITemporalClient in DI so it can be injected anywhere.

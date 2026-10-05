@@ -27,7 +27,17 @@ namespace TaskManager.Application.Commands.Timesheets
             );
 
             await _repository.AddAsync(timesheet);
-            await _workflowService.StartApprovalWorkflowAsync(timesheet.Id);
+
+            try
+            {
+                await _workflowService.StartApprovalWorkflowAsync(timesheet.Id);
+            }
+            catch (Exception ex)
+            {
+                // Log and surface — timesheet saved but workflow failed to start
+                throw new InvalidOperationException(
+                    $"Timesheet {timesheet.Id} saved but workflow failed to start.", ex);
+            }
 
             return timesheet.Id;
         }

@@ -1,7 +1,6 @@
-﻿namespace TaskManager.Application.Interfaces
+﻿namespace TaskManager.Application.Interfaces;
+
+public interface ITimesheetWorkflowService
 {
-    public interface ITimesheetWorkflowService
-    {
-        Task StartApprovalWorkflowAsync(int timesheetId);
-    }
+    Task StartApprovalWorkflowAsync(int timesheetId);
 }

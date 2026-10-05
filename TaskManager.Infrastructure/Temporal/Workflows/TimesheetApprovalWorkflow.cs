@@ -1,7 +1,7 @@
 ﻿using Temporalio.Workflows;
-using TaskManager.Infrastructure.Activities;
+using TaskManager.Infrastructure.Temporal.Activities;
 
-namespace TaskManager.Infrastructure.Workflows
+namespace TaskManager.Infrastructure.Temporal.Workflows
 {
     [Workflow]
     public class TimesheetApprovalWorkflow

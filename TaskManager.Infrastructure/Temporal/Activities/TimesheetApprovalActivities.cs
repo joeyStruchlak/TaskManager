@@ -1,7 +1,7 @@
 ﻿using Temporalio.Activities;
 using TaskManager.Domain.Interfaces;
 
-namespace TaskManager.Infrastructure.Activities
+namespace TaskManager.Infrastructure.Temporal.Activities
 {
     public class TimesheetApprovalActivities
     {
@@ -16,7 +16,8 @@ namespace TaskManager.Infrastructure.Activities
         public async Task NotifySupervisorAsync(int timesheetId)
         {
             var timesheet = await _repository.GetByIdAsync(timesheetId);
-            if (timesheet == null) return;
+            if (timesheet == null)
+                throw new InvalidOperationException($"Timesheet {timesheetId} was not found.");
             Console.WriteLine($"Supervisor notified for timesheet {timesheetId} — {timesheet.SupervisorEmail}");
         }
 
@@ -31,7 +32,8 @@ namespace TaskManager.Infrastructure.Activities
         public async Task EscalateToPayrollManagerAsync(int timesheetId)
         {
             var timesheet = await _repository.GetByIdAsync(timesheetId);
-            if (timesheet == null) return;
+            if (timesheet == null)
+                throw new InvalidOperationException($"Timesheet {timesheetId} was not found.");
             Console.WriteLine($"Timesheet {timesheetId} escalated — supervisor {timesheet.SupervisorEmail} did not respond.");
         }
     }

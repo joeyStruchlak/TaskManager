@@ -1,8 +1,9 @@
 ﻿using Temporalio.Client;
+using Temporalio.Workflows;
 using TaskManager.Application.Interfaces;
-using TaskManager.Infrastructure.Workflows;
+using TaskManager.Infrastructure.Temporal.Workflows;
 
-namespace TaskManager.Infrastructure.Workflows
+namespace TaskManager.Infrastructure.Temporal
 {
     public class TimesheetWorkflowService : ITimesheetWorkflowService
     {

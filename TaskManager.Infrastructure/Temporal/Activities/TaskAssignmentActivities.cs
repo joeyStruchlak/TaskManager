@@ -1,7 +1,7 @@
 ﻿using Temporalio.Activities;
 using TaskManager.Domain.Interfaces;
 
-namespace TaskManager.Infrastructure.Activities;
+namespace TaskManager.Infrastructure.Temporal.Activities;
 
 // TEMPORAL CONCEPT: Activities
 // This is where REAL WORK happens.
